@@ -8,15 +8,16 @@ const { Network, Alchemy } = require('alchemy-sdk')
 const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER)
 const wallet = new ethers.Wallet(process.env.WALLET_PK)
 const signer = wallet.connect(provider)
+
 //Taker Signer
 const taker_wallet = new ethers.Wallet(process.env.TAKER_WALLET_PK)
 const signerForTaker = taker_wallet.connect(provider)
 
 // Set up the assets we want to swap (CryptoPunk #69 and 420 WETH)
 const CRYPTOPUNK = {
-    tokenAddress: '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb',
-    tokenId: '69',
-    type: 'ERC721', // 'ERC721' or 'ERC1155'
+    tokenAddress: '0xCe8771D0b27a3e9aA7FEC79A8b7fdC95927ac567',
+    tokenId: '1',
+    type: 'ERC1155', // 'ERC721' or 'ERC1155'
   };
   const FOUR_HUNDRED_TWENTY_WETH = {
     tokenAddress: '0x6b175474e89094c44da98b954eedeac495271d0f', // WETH contract address
@@ -50,10 +51,10 @@ nftSwapSdk.signOrder(order)
 const nftSwapSdkPart2 = new NftSwapV4(provider, signerForTaker, process.env.CHAIN_ID);
 const walletAddressTaker = process.env.TAKER_WALLET
 // Approve USDC to trade (if required)
-nftSwapSdkPart2.approveTokenOrNftByAsset(FOUR_HUNDRED_TWENTY_WETH, walletAddressTaker)
+/*nftSwapSdkPart2.approveTokenOrNftByAsset(FOUR_HUNDRED_TWENTY_WETH, walletAddressTaker)
 .then((response) => {
     console.log(`Taker ${JSON.stringify(response)}`)
-})
+})*/
 
 // Fill order :)
 nftSwapSdkPart2.fillSignedOrder(signedOrder)
