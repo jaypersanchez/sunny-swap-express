@@ -39,16 +39,38 @@ const assetsToSwapUserB = [BORED_APE_69];
 // Initiate the SDK for User A.
 // Pass the user's wallet signer (available via the user's wallet provider) to the Swap SDK
 const nftSwapSdk = new NftSwapV4(provider, signer, process.env.CHAIN_ID);
-
+//straight approve
+//console.log(`${assetsToSwapUserA[0].tokenAddress}::${walletAddressUserA}`)
+nftSwapSdk.approveTokenOrNftByAsset( CRYPTOPUNK_420, walletAddressUserA )
+.then( approvalTx => {
+    approvalTx.wait()
+    .then( approvalTxReceipt => {
+        console.log(
+            `Approved ${CRYPTOPUNK_420} contract to swap with 0x (txHash: ${approvalTxReceipt.transactionHash})`
+        );
+    })
+    
+})
 // Check if we need to approve the NFT for swapping
-nftSwapSdk.loadApprovalStatus(
-  assetsToSwapUserA[0],
-  walletAddressUserA
-)
-.then( approvalStatusForUserA => {
-    console.log(`approvalStatusForUserA ${approvalStatusForUserA.contractApproved}`)
+//nftSwapSdk.loadApprovalStatus(
+//  assetsToSwapUserA[0],
+//  walletAddressUserA
+//)
+//.then( approvalStatusForUserA => {
+    //console.log(`approvalStatusForUserA ${approvalStatusForUserA.contractApproved}`)
+    //straight approve
+    /*nftSwapSdk.approveTokenOrNftByAsset( assetsToSwapUserA[0], walletAddressUserA )
+    .then( approvalTx => {
+        approvalTx.wait()
+        .then( approvalTxReceipt => {
+            console.log(
+                `Approved ${assetsToSwapUserA[0].tokenAddress} contract to swap with 0x (txHash: ${approvalTxReceipt.transactionHash})`
+            );
+        })
+        
+    })*/
         // If we do need to approve User A's CryptoPunk for swapping, let's do that now
-    if (!approvalStatusForUserA.contractApproved) {
+    /*if (!approvalStatusForUserA.contractApproved) {
         nftSwapSdk.approveTokenOrNftByAsset(
         assetsToSwapUserA[0],
         walletAddressUserA
@@ -62,12 +84,14 @@ nftSwapSdk.loadApprovalStatus(
             })
             
         })
-        
-    }
-} )
+    }*/
+    //console.log(`approvalStatusForUserA ${approvalStatusForUserA.contractApproved}`)
+//} )
 
 
 // Create the order (Remember, User A initiates the trade, so User A creates the order)
+/*
+nftSwapSdk.buildNftAndErc20Order()
 const order = nftSwapSdk.buildNftAndErc20Order(
   assetsToSwapUserA[0],
   assetsToSwapUserB[0],
@@ -89,6 +113,7 @@ nftSwapSdk.signOrder(order, walletAddressUserA)
             console.log(`Approval Status for TAKER ${approvalStatusForUserB.contractApproved}`)
             // If we do need to approve NFT for swapping, let's do that now
             if (!approvalStatusForUserB.contractApproved) {
+                
                 nftSwapSdk.approveTokenOrNftByAsset(
                 assetsToSwapUserB[0],
                 walletAddressUserB
@@ -112,8 +137,7 @@ nftSwapSdk.signOrder(order, walletAddressUserA)
         })
     })
 })
-
-    
+*/
 // Part 1 Complete. User A is now done. Now we send the `signedOrder` to User B to complete the trade.
 
 
@@ -121,6 +145,7 @@ nftSwapSdk.signOrder(order, walletAddressUserA)
 // Part 2 of the trade -- User B (the 'taker') accepts and fills order from User A and completes trade
 // ............................
 // Initiate the SDK for User B.
+/*
 const takerFulfillment = async(signedOrder) => {
         // Initiate the SDK for User B.
         const nftSwapSdk = new NftSwapV4(provider, signerForTaker, process.env.CHAIN_ID);
@@ -134,6 +159,7 @@ const takerFulfillment = async(signedOrder) => {
                 console.log(`Approval Status for TAKER ${approvalStatusForUserB.contractApproved}`)
                 // If we do need to approve NFT for swapping, let's do that now
                 if (!approvalStatusForUserB.contractApproved) {
+                    
                     nftSwapSdk.approveTokenOrNftByAsset(
                     assetsToSwapUserB[0],
                     walletAddressUserB
@@ -152,3 +178,4 @@ const takerFulfillment = async(signedOrder) => {
         const fillTxReceipt = await nftSwapSdk.awaitTransactionHash(fillTx.hash);
         console.log(`🎉 🥳 Order filled. TxHash: ${fillTxReceipt.transactionHash}`);
 }
+*/
