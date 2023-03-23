@@ -17,16 +17,18 @@ const NFTFunge_2 = {
     tokenAddress: '0xCe8771D0b27a3e9aA7FEC79A8b7fdC95927ac567', // CryptoPunk contract address
     tokenId: '2', // Token Id of the CryptoPunk we want to swap
     type: 'ERC1155', // Must be one of 'ERC20', 'ERC721', or 'ERC1155'
-    gas: "2100000",
-    gasLimit:3e7
+    gas: 21000,
+    gasPrice: 8000000000,
+    gasLimit: 5000000
   };
   //Bidder
   const ONE_DOLLAR_SEVENTY_FOUR_WETH = {
     tokenAddress: '0x6b175474e89094c44da98b954eedeac495271d0f', // WETH contract address
     amount: Web3.utils.toWei('0.017'), // $1.74 Wrapped-ETH (WETH is 18 digits)
     type: 'ERC20',
-    gas: "2100000",
-    gasLimit:3e7
+    gas: 21000,
+    gasPrice: 8000000000,
+    gasLimit: 5000000
   };
   
   // User A Trade Data
