@@ -6,31 +6,36 @@ const { Network, Alchemy } = require('alchemy-sdk')
 
 // From your app, provide NftSwap the web3 provider, signer for the user's wallet, and the chain id.
 const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER)
+//NFT Owner
 const wallet = new ethers.Wallet(process.env.WALLET_PK)
 const signer = wallet.connect(provider)
-//Taker Signer
+//Taker/Bidder Signer
 const taker_wallet = new ethers.Wallet(process.env.TAKER_WALLET_PK)
 const signerForTaker = taker_wallet.connect(provider)
-//Maker
-const CRYPTOPUNK_420 = {
+
+const NFTFunge_2 = {
     tokenAddress: '0xCe8771D0b27a3e9aA7FEC79A8b7fdC95927ac567', // CryptoPunk contract address
     tokenId: '2', // Token Id of the CryptoPunk we want to swap
     type: 'ERC1155', // Must be one of 'ERC20', 'ERC721', or 'ERC1155'
+    gas: "2100000",
+    gasLimit:3e7
   };
-  //Taker
-  const BORED_APE_69 = {
-    tokenAddress: '0xAB0199069C72D2F02c8F2AA2Eb117D918Cb9Bbaf', // BAYC contract address
-    tokenId: '1', // Token Id of the BoredApe we want to swap
-    type: 'ERC1155',
+  //Bidder
+  const ONE_DOLLAR_SEVENTY_FOUR_WETH = {
+    tokenAddress: '0x6b175474e89094c44da98b954eedeac495271d0f', // WETH contract address
+    amount: Web3.utils.toWei('0.017'), // $1.74 Wrapped-ETH (WETH is 18 digits)
+    type: 'ERC20',
+    gas: "2100000",
+    gasLimit:3e7
   };
   
   // User A Trade Data
 const walletAddressUserA = process.env.WALLET;
-const assetsToSwapUserA = [CRYPTOPUNK_420];
+const assetsToSwapUserA = [NFTFunge_2];
 
 // User B Trade Data
 const walletAddressUserB = process.env.TAKER_WALLET;
-const assetsToSwapUserB = [BORED_APE_69];
+const assetsToSwapUserB = [ONE_DOLLAR_SEVENTY_FOUR_WETH];
 
 // ............................
 // Part 1 of the trade -- User A (the 'maker') initiates an order
@@ -38,14 +43,14 @@ const assetsToSwapUserB = [BORED_APE_69];
 
 // Initiate the SDK for User A.
 // Pass the user's wallet signer (available via the user's wallet provider) to the Swap SDK
-const nftSwapSdk = new NftSwap(provider, signer, process.env.CHAIN_ID);
+const nftSwapSdk = new NftSwapV4(provider, signer, process.env.CHAIN_ID);
 //straight approve
-nftSwapSdk.approveTokenOrNftByAsset( CRYPTOPUNK_420, walletAddressUserA )
+nftSwapSdk.approveTokenOrNftByAsset( NFTFunge_2, walletAddressUserA )
 .then( approvalTx => {
     approvalTx.wait()
     .then( approvalTxReceipt => {
         console.log(
-            `Approved ${CRYPTOPUNK_420} contract to swap with 0x (txHash: ${approvalTxReceipt.transactionHash})`
+            `Approved ${NFTFunge_2.tokenAddress} contract to swap with 0x (txHash: ${approvalTxReceipt.transactionHash})`
         );
     })
     
@@ -53,25 +58,36 @@ nftSwapSdk.approveTokenOrNftByAsset( CRYPTOPUNK_420, walletAddressUserA )
 
 // Create the order (Remember, User A initiates the trade, so User A creates the order)
 const order = nftSwapSdk.buildOrder(
-    CRYPTOPUNK_420,
-    BORED_APE_69,
+    NFTFunge_2,
+    ONE_DOLLAR_SEVENTY_FOUR_WETH,
     walletAddressUserA
 );
 // Sign the order (User A signs since they are initiating the trade)
 nftSwapSdk.signOrder(order, walletAddressUserA)
 .then( signedOrder => {
     //Part 2 of the trade.  Taker accepts and fills order.  This will complete the trade.
-    const nftSwapSdk = new NftSwap(provider, signerForTaker, process.env.CHAIN_ID);
+    const nftSwapSdk = new NftSwapV4(provider, signerForTaker, process.env.CHAIN_ID);
     //straight approval
-    nftSwapSdk.approveTokenOrNftByAsset( BORED_APE_69, walletAddressUserB )
+    nftSwapSdk.approveTokenOrNftByAsset( ONE_DOLLAR_SEVENTY_FOUR_WETH, walletAddressUserB )
     .then( approvalTx => {
         approvalTx.wait()
         .then( approvalTxReceipt => {
             console.log(
-            `Approved ${BORED_APE_69.tokenAddress} contract to swap with 0x. TxHash: ${approvalTxReceipt.transactionHash})`
+            `Approved ${ONE_DOLLAR_SEVENTY_FOUR_WETH.tokenAddress} contract to swap with 0x. TxHash: ${approvalTxReceipt.transactionHash})`
             );
         })
     })
+
+    //now that it's been approved, fill the order
+    nftSwapSdk.fillSignedOrder(signedOrder, {amount:Web3.utils.toWei('0.001'),   gas: 21000,
+    gasPrice: 8000000000,gasLimit: 5000000})
+    .then( fillTx => {
+        nftSwapSdk.awaitTransactionHash(fillTx.hash)
+        .then(fillTxReceipt => {
+            console.log(`🎉 🥳 Order filled. TxHash: ${fillTxReceipt.transactionHash}`);
+        })
+    })
+        
 })
 // Part 1 Complete. User A is now done. Now we send the `signedOrder` to User B to complete the trade.
 
