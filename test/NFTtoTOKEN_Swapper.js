@@ -39,10 +39,6 @@ const assetsToSwapUserA = [NFTFunge_2];
 const walletAddressUserB = process.env.TAKER_WALLET;
 const assetsToSwapUserB = [ONE_DOLLAR_SEVENTY_FOUR_WETH];
 
-// ............................
-// Part 1 of the trade -- User A (the 'maker') initiates an order
-// ............................
-
 // Initiate the SDK for User A.
 // Pass the user's wallet signer (available via the user's wallet provider) to the Swap SDK
 const nftSwapSdk = new NftSwapV4(provider, signer, process.env.CHAIN_ID);
@@ -91,44 +87,3 @@ nftSwapSdk.signOrder(order, walletAddressUserA)
     })
         
 })
-// Part 1 Complete. User A is now done. Now we send the `signedOrder` to User B to complete the trade.
-
-
-// ............................
-// Part 2 of the trade -- User B (the 'taker') accepts and fills order from User A and completes trade
-// ............................
-// Initiate the SDK for User B.
-/*
-const takerFulfillment = async(signedOrder) => {
-        // Initiate the SDK for User B.
-        const nftSwapSdk = new NftSwapV4(provider, signerForTaker, process.env.CHAIN_ID);
-
-        // Check if we need to approve the NFT for swapping
-        nftSwapSdk.loadApprovalStatus(
-        assetsToSwapUserB[0],
-        walletAddressUserB
-        )
-        .then( approvalStatusForUserB => {
-                console.log(`Approval Status for TAKER ${approvalStatusForUserB.contractApproved}`)
-                // If we do need to approve NFT for swapping, let's do that now
-                if (!approvalStatusForUserB.contractApproved) {
-                    
-                    nftSwapSdk.approveTokenOrNftByAsset(
-                    assetsToSwapUserB[0],
-                    walletAddressUserB
-                    )
-                    .then( approvalTx => {
-                        approvalTx.wait()
-                        .then( approvalTxReceipt => {
-                            console.log(
-                                `Approved ${assetsToSwapUserB[0].tokenAddress} contract to swap with 0x. TxHash: ${approvalTxReceipt.transactionHash})`
-                            );
-                        })
-                    })
-                }
-        })
-        const fillTx = await nftSwapSdk.fillSignedOrder(signedOrder);
-        const fillTxReceipt = await nftSwapSdk.awaitTransactionHash(fillTx.hash);
-        console.log(`🎉 🥳 Order filled. TxHash: ${fillTxReceipt.transactionHash}`);
-}
-*/
