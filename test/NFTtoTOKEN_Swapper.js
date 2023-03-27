@@ -24,7 +24,7 @@ const NFTFunge_2 = {
   //Bidder
   const ONE_DOLLAR_SEVENTY_FOUR_WETH = {
     tokenAddress: '0x6b175474e89094c44da98b954eedeac495271d0f', // WETH contract address
-    amount: Web3.utils.toWe ('0.017'), // $1.74 Wrapped-ETH (WETH is 18 digits)
+    amount: Web3.utils.toWei('0.017'), // $1.74 Wrapped-ETH (WETH is 18 digits)
     type: 'ERC20',
     gas: 21000,
     gasPrice: 8000000000,
