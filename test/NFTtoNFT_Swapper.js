@@ -38,10 +38,19 @@ const erc1155Order = new ERC1155Order ({
 })
 
 //sign order by the maker
-erc1155Order.getSignatureWithKey(process.env.WALLET_PK,SignatureType.EIP712)
+console.log(process.env.WALLET_PK)
+erc1155Order.getSignatureWithKey(process.env.WALLET_PK,SignatureType.PreSigned)
 .then(signature => {
-    //Filling Orders
-    erc1155Order.
+    console.log(signature)
+    /*nftSwapSdk.fillSignedOrder(signedOrder, {amount:Web3.utils.toWei('0.0001'),   gas: 21000,
+    gasPrice: 8000000000,gasLimit: 5000000})
+    .then( fillTx => {
+        nftSwapSdk.awaitTransactionHash(fillTx.hash)
+        .then(fillTxReceipt => {
+            console.log(`🎉 🥳 Order filled. TxHash: ${fillTxReceipt.transactionHash}`);
+        })
+    })*/
+
 })
 
 
