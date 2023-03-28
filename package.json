@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@0x/protocol-utils": "^11.18.1",
     "@traderxyz/nft-swap-sdk": "^0.31.1",
     "alchemy-sdk": "^2.6.1",
     "cookie-parser": "~1.4.4",

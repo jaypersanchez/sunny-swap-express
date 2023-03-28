@@ -14,8 +14,8 @@ const taker_wallet = new ethers.Wallet(process.env.TAKER_WALLET_PK)
 const signerForTaker = taker_wallet.connect(provider)
 
 const NFTFunge_2 = {
-    tokenAddress: '0xCe8771D0b27a3e9aA7FEC79A8b7fdC95927ac567', // CryptoPunk contract address
-    tokenId: '2', // Token Id of the CryptoPunk we want to swap
+    tokenAddress: '0x3f64cd9ec941230097f7d3757d99c64b9f8e3864',
+    tokenId: '1', // Token Id of the CryptoPunk we want to swap
     type: 'ERC1155', // Must be one of 'ERC20', 'ERC721', or 'ERC1155'
     gas: 21000,
     gasPrice: 8000000000,
@@ -23,8 +23,8 @@ const NFTFunge_2 = {
   };
   //Bidder
   const ONE_DOLLAR_SEVENTY_FOUR_WETH = {
-    tokenAddress: '0x6b175474e89094c44da98b954eedeac495271d0f', // WETH contract address
-    amount: Web3.utils.toWei('0.017'), // $1.74 Wrapped-ETH (WETH is 18 digits)
+    tokenAddress: '0x0000000000000000000000000000000000001010', // MATIC
+    amount: Web3.utils.toWei('0.0001'), // $1.74 Wrapped-ETH (WETH is 18 digits)
     type: 'ERC20',
     gas: 21000,
     gasPrice: 8000000000,
@@ -43,7 +43,7 @@ const assetsToSwapUserB = [ONE_DOLLAR_SEVENTY_FOUR_WETH];
 // Pass the user's wallet signer (available via the user's wallet provider) to the Swap SDK
 const nftSwapSdk = new NftSwapV4(provider, signer, process.env.CHAIN_ID);
 //straight approve
-nftSwapSdk.approveTokenOrNftByAsset( NFTFunge_2, walletAddressUserA )
+/*nftSwapSdk.approveTokenOrNftByAsset( NFTFunge_2, walletAddressUserA )
 .then( approvalTx => {
     approvalTx.wait()
     .then( approvalTxReceipt => {
@@ -52,7 +52,7 @@ nftSwapSdk.approveTokenOrNftByAsset( NFTFunge_2, walletAddressUserA )
         );
     })
     
-})
+})*/
 
 // Create the order (Remember, User A initiates the trade, so User A creates the order)
 const order = nftSwapSdk.buildOrder(
@@ -66,7 +66,7 @@ nftSwapSdk.signOrder(order, walletAddressUserA)
     //Part 2 of the trade.  Taker accepts and fills order.  This will complete the trade.
     const nftSwapSdk = new NftSwapV4(provider, signerForTaker, process.env.CHAIN_ID);
     //straight approval
-    nftSwapSdk.approveTokenOrNftByAsset( ONE_DOLLAR_SEVENTY_FOUR_WETH, walletAddressUserB )
+    /*nftSwapSdk.approveTokenOrNftByAsset( ONE_DOLLAR_SEVENTY_FOUR_WETH, walletAddressUserB )
     .then( approvalTx => {
         approvalTx.wait()
         .then( approvalTxReceipt => {
@@ -74,10 +74,10 @@ nftSwapSdk.signOrder(order, walletAddressUserA)
             `Approved ${ONE_DOLLAR_SEVENTY_FOUR_WETH.tokenAddress} contract to swap with 0x. TxHash: ${approvalTxReceipt.transactionHash})`
             );
         })
-    })
+    })*/
 
     //now that it's been approved, fill the order
-    nftSwapSdk.fillSignedOrder(signedOrder, {amount:Web3.utils.toWei('0.001'),   gas: 21000,
+    nftSwapSdk.fillSignedOrder(signedOrder, {amount:Web3.utils.toWei('0.0001'),   gas: 21000,
     gasPrice: 8000000000,gasLimit: 5000000})
     .then( fillTx => {
         nftSwapSdk.awaitTransactionHash(fillTx.hash)
