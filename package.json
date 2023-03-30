@@ -6,7 +6,10 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "0x": "^5.5.0",
+    "@0x/order-utils": "^10.4.28",
     "@0x/protocol-utils": "^11.18.1",
+    "@0x/web3-wrapper": "^8.0.0",
     "@traderxyz/nft-swap-sdk": "^0.31.1",
     "alchemy-sdk": "^2.6.1",
     "cookie-parser": "~1.4.4",
