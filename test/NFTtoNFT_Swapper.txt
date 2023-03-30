@@ -53,11 +53,12 @@ nftSwapSdk.approveTokenOrNftByAsset(assetsToSwapUserA[0], process.env.WALLET)
     })
 })
 
+
 // Create the order (Remember, User A initiates the trade, so User A creates the order)
 const order = nftSwapSdk.buildOrder(
     assetsToSwapUserA,
     assetsToSwapUserB,
-    makerWallet
+    makerWallet,
   );
   // Sign the order (User A signs since they are initiating the trade)
   nftSwapSdk.signOrder(order, process.env.WALLET)
@@ -77,7 +78,8 @@ const order = nftSwapSdk.buildOrder(
     // The final step is the taker (User B) submitting the order.
     // The taker approves the trade transaction and it will be submitted on the blockchain for settlement.
     // Once the transaction is confirmed, the trade will be settled and cannot be reversed.
-    nftSwapSdk.fillSignedOrder(signedOrder)
+    const transactionOverrides = { gasLimit: 500000, gasPrice: 21000000000}
+    nftSwapSdk.fillSignedOrder(signedOrder, transactionOverrides)
     .then(fillTx => {
         nftSwapSdk.awaitTransactionHash(fillTx)
         .then(fillTxReceipt => {
